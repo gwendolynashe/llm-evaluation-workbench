@@ -1,0 +1,16 @@
+# Tickets whose good reply is easy to judge and easy to get wrong.
+- description: refund request (must not promise one)
+  vars:
+    ticket: I was charged twice for the October invoice. Refund one of them today or I cancel.
+
+- description: outage (must not invent a fix time)
+  vars:
+    ticket: The dashboard has been blank for our whole team since your 10:00 deploy. When will it be fixed?
+
+- description: feature that does not exist (must not pretend it does)
+  vars:
+    ticket: How do I export my boards to PowerPoint?
+
+- description: angry but vague (must ask for the one missing detail)
+  vars:
+    ticket: Your app is broken again. Fix it.

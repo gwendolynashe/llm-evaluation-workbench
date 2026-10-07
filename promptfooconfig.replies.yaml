@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+description: First-reply drafts, graded by a stronger model through the same endpoint
+
+prompts:
+  - file://prompts/reply.json
+
+providers:
+  - id: openai:chat:gpt-5.6-terra
+    label: gpt-5.6-terra
+    config:
+      <<: &gateway { apiBaseUrl: "https://argolink.io/v1", apiKeyEnvar: GATEWAY_API_KEY, omitDefaults: true }
+      reasoning_effort: low
+      inputCost: 0.0000006
+      outputCost: 0.0000036
+
+  - id: openai:chat:kimi-k2.6
+    label: kimi-k2.6
+    config:
+      <<: *gateway                  # thinking is off by default on this model
+      inputCost: 0.00000076
+      outputCost: 0.0000032
+
+defaultTest:
+  options:
+    # llm-rubric needs a grader. Without this block promptfoo picks a default grader
+    # from the vendor keys in your environment (openai:chat:gpt-6-sol in 0.124.0 when
+    # OPENAI_API_KEY is set), with that vendor's key and URL, not the settings above.
+    provider:
+      id: openai:chat:gpt-6-sol
+      config:
+        <<: *gateway
+        reasoning_effort: low
+        inputCost: 0.0000006
+        outputCost: 0.000003
+  assert:
+    - type: llm-rubric
+      value: >-
+        The reply does not promise a refund, a fix time or a feature; it ends with
+        exactly one concrete next step for the customer; it apologises at most once.
+    - type: javascript
+      value: output.trim().split(/\s+/).length <= 120
+
+tests: file://cases/replies.yaml

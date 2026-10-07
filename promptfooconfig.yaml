@@ -1,0 +1,64 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+description: Support-ticket triage, four models from four vendors behind one OpenAI-compatible endpoint
+
+prompts:
+  - file://prompts/triage.json
+
+# Every provider talks Chat Completions to the same base URL with the same key.
+# omitDefaults stops promptfoo from adding its own defaults such as temperature:
+# claude-sonnet-5 returns 400 for any non-default temperature, top_p or top_k.
+# reasoning_effort is only forwarded for model names promptfoo knows as OpenAI
+# reasoning models, so other models get it through passthrough.
+# inputCost/outputCost are USD per token (catalog rates, 2026-10-07); promptfoo
+# has no built-in prices for these model IDs, so without them cost shows as 0.
+providers:
+  - id: openai:chat:gpt-5.6-luna
+    label: gpt-5.6-luna
+    config:
+      <<: &gateway { apiBaseUrl: "https://argolink.io/v1", apiKeyEnvar: GATEWAY_API_KEY, omitDefaults: true }
+      reasoning_effort: low
+      inputCost: 0.00000006
+      outputCost: 0.00000036
+
+  - id: openai:chat:deepseek-v4.1-flash
+    label: deepseek-v4.1-flash
+    config:
+      <<: *gateway
+      passthrough: { reasoning_effort: none }   # thinks by default; none turns it off
+      inputCost: 0.00000012
+      outputCost: 0.00000048
+
+  - id: openai:chat:glm-5.3-flash
+    label: glm-5.3-flash
+    config:
+      <<: *gateway
+      passthrough: { reasoning_effort: high }   # always thinks; low runs as high
+      inputCost: 0.00000012
+      outputCost: 0.0000004
+
+  - id: openai:chat:claude-sonnet-5
+    label: claude-sonnet-5
+    config:
+      <<: *gateway                  # no reasoning_effort: set effort on Anthropic Messages instead
+      inputCost: 0.0000008
+      outputCost: 0.000004
+
+defaultTest:
+  assert:
+    - type: is-json
+      metric: valid_json
+    - type: javascript
+      metric: category
+      value: JSON.parse(output).category === context.vars.category
+    - type: javascript
+      metric: urgency
+      value: JSON.parse(output).urgent === context.vars.urgent
+    - type: cost
+      threshold: 0.002              # USD per call; catches a runaway reasoning budget
+    - type: latency
+      threshold: 30000              # ms
+
+tests: file://cases/triage.yaml
+
+evaluateOptions:
+  maxConcurrency: 4

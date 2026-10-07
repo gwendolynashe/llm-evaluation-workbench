@@ -1,0 +1,73 @@
+# 12 labelled tickets. vars.category and vars.urgent are the expected answer;
+# the checks themselves live in defaultTest in promptfooconfig.yaml.
+- description: double charge
+  vars:
+    ticket: I was charged twice for the October invoice. Can you refund one of the charges?
+    category: billing
+    urgent: false
+
+- description: export crash
+  vars:
+    ticket: "The CSV export crashes with 'index out of range' whenever a column is empty."
+    category: bug
+    urgent: false
+
+- description: add an admin
+  vars:
+    ticket: How do I add a second admin to our workspace?
+    category: how-to
+    urgent: false
+
+- description: team locked out after 2FA change
+  vars:
+    ticket: Nobody on our team can log in since the 2FA change this morning. We are completely blocked.
+    category: account
+    urgent: true
+
+- description: switch to annual billing
+  vars:
+    ticket: Can I switch from monthly to annual billing and keep my current discount?
+    category: billing
+    urgent: false
+
+- description: blank dashboard after deploy
+  vars:
+    ticket: The dashboard shows a blank page for everyone since your 10:00 deploy. Production is down for us.
+    category: bug
+    urgent: true
+
+- description: rate limits question
+  vars:
+    ticket: Where can I find the API rate limits for the Pro plan?
+    category: how-to
+    urgent: false
+
+- description: change account email
+  vars:
+    ticket: I'd like to change the email address on my account to my new work address.
+    category: account
+    urgent: false
+
+- description: office visit
+  vars:
+    ticket: Do you have an office in Berlin? I'd like to drop by next month.
+    category: other
+    urgent: false
+
+- description: webhooks failing
+  vars:
+    ticket: Webhook deliveries fail with HTTP 500 since last night and our order sync has stopped.
+    category: bug
+    urgent: true
+
+- description: VAT invoice
+  vars:
+    ticket: Please send me a VAT invoice for order 4471 with our company address on it.
+    category: billing
+    urgent: false
+
+- description: keyboard shortcut
+  vars:
+    ticket: Is there a keyboard shortcut to duplicate a card on the board?
+    category: how-to
+    urgent: false

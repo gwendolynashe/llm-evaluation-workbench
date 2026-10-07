@@ -1,8 +1,9 @@
 __pycache__/
 *.py[cod]
+.pytest_cache/
+node_modules/
+.promptfoo/
+output/
+results.*
 .env
 .env.*
-!.env.example
-node_modules/
-dist/
-.pytest_cache/
